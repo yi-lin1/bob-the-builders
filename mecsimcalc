@@ -3,6 +3,8 @@ import folium
 import pandas as pd
 import base64
 import io
+import math
+import datetime
 
 """
 def plt_show(plt, width=500, dpi=100):
@@ -118,10 +120,45 @@ def main(inputs):
  ne = inputs['ne']
  vs = (K*i)/ne
  #length calculations 
- 
+ lat1 = inputs['latitude_spill']
+ lat2 = inputs['latitude_predict']
+ lon1 = inputs['longtitude_spill']
+ lon2 = inputs['longitude_predict']
+ #def distance(lat1, lon1, lat2, lon2):
+	  r = 6371; # km
+      p = pi / 180;
+	    beta = 0.5 - cos((lat2-lat1)*p)/2 + cos(lat1*p) * cos(lat2*p) * (1-cos((lon2-lon1)*p))/2;
+	    length = 2 * r * asin(sqrt(beta));       
+ #Hydronamic Dispersion       
+ D* = inputs['chemical_diffusion']
+ #Retardation Factor 
+ Kd = inputs['distribution_coeff']
+ ps = inputs['soil_bulk_density']
+ R = 1+Kd(ps/ne)
+ #Time Calculations 
+ date1 = inputs['spill_start_date']
+ date2 = inputs['end_date']
+ #def days_between_dates(date1, date2):
+    date_format = "%d-%m-%Y"
+    # Convert strings to datetime objects
+    datetime1 = datetime.strptime(date1, date_format)
+    datetime2 = datetime.strptime(date2, date_format)
+    
+    # Calculate the difference between dates
+    days = datetime2 - datetime1
+    t = days*86400
+    return {"k": k, "length": length, "t" : t}
 
-            return {"k": k}
+# Example usage:
+date_string1 = "25-12-2023"
+date_string2 = "31-12-2023"
+days_difference = days_between_dates(date_string1, date_string2)
+print(f"The number of days between {date_string1} and {date_string2} is: {days_difference} days")
 
+#Concentration Calculations 
+c0 = inputs['initial_conc']
+erfc1 = (R*length-vs)
+    
 
 
 
