@@ -1,0 +1,2 @@
+alphaL = 0.831*(log(length))**2.414;
+DL = alphaL*vs + Dstar;
