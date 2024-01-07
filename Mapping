@@ -9,19 +9,17 @@ def main(inputs):
     # Create data as Panda's DataFrame
     df = pd.DataFrame(
         {
-            "Latitude": [53.5336,53.5318],
-            "Longitude": [113.5066,113.5099
-               
-            ],
+            "Latitude": [lat1,lat2],
+            "Longitude": [lon1,lon2],
         }
     )
     # Merge `Latitude` and `Longitude` columns into one column called `geometry`
-    df["geometry"] = df[["Easting", "Northing"]].values.tolist()
+    df["geometry"] = df[["Latitude", "Longitude"]].values.tolist()
     # Convert all geometries into Point shapes
     df["geometry"] = df["geometry"].apply(Point)
 
-    # Convert DataFrame to GeoDataFrame and project coordinates to "EPSG:26911"
-    gdf = geopandas.GeoDataFrame(df, crs="EPSG:26911")
+    # Convert DataFrame to GeoDataFrame
+    gdf = geopandas.GeoDataFrame(df, )
 
     # Create a new GeoDataFrame with a LineString and a Polygon
     more_geometries = geopandas.GeoDataFrame(
@@ -29,22 +27,13 @@ def main(inputs):
             "geometry": [
                 LineString(
                     [
-                        [444248.0694, 5.465388e06],
-                        [444248.2847, 5.465394e06],
-                        [444248.4852, 5.465400e06],
+                        [lon1, lat1],
+                        [lon2, lat2],
+                    
                     ]
                 ),
-                Polygon(
-                    [
-                        [444243.6719, 5.465405e06],
-                        [444248.8454, 5.465410e06],
-                        [444249.0068, 5.465415e06],
-                        [444299.1569, 5.465419e06],
-                    ]
-                ),
-            ]
-        }
-    )
+        
+
     # Add the new geometries as new rows to the existing GeoDataFrame, gdf
     gdf = pd.concat((gdf, more_geometries), axis=0)
 
