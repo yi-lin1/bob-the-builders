@@ -4,6 +4,6 @@
         location=[lat1, lon1],
         tooltip="Click on Circle",
         popup="Circle",
-        color = red,
+        color = 'red',
         fill=False,
     ).add_to(m)
