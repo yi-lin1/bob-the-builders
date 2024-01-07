@@ -143,7 +143,15 @@ def main(inputs):
     # Export folium map as HTML string
     map_html = m._repr_html_()
 
-
+ # Add ellipse shape
+    folium.Circle(
+        radius=20,
+        location=[(lat1+lat2)/2, (360-lon1)+(360-lon2)/2],
+        tooltip="Click on Circle",
+        popup="Circle",
+        color = 31,
+        fill=False,
+    ).add_to(m)
 
     return {"K": K, "L": L, "t" : t, "Dc" : Dc, "R": R, "vs" : vs, "L": L, "map": map_html, "C": C, "T_bulk": T_bulk, "c0": c0}
 
