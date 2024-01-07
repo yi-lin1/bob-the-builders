@@ -6,37 +6,7 @@ import io
 import math
 import datetime
 
-"""
-def plt_show(plt, width=500, dpi=100):
-    # Converts matplotlib plt to image data string
-    #   plt is the matplotlib pyplot or figure
-    #   width is the width of the graph image in pixels
-    #   dpi (dots per inch) is the resolution of the image
-    bytes = io.BytesIO()
-    plt.savefig(bytes, format='png', dpi=dpi)  # Save as png image
-    if hasattr(plt, "close"):
-        plt.close()
-    bytes.seek(0)
-    base64_string = "data:image/png;base64," + \
-        base64.b64encode(bytes.getvalue()).decode("utf-8")
-    return "<img src='" + base64_string + "' width='" + str(width) + "'>"
 
-
-def main(inputs):
-    # (1) Folium map
-    folium_map = folium.Map(location=[40.730610, -73.935242], zoom_start=9, tiles="OpenStreetMap")
-    folium_map = folium_map._repr_html_()
-
-    # (2) Geopandas map
-    path_to_data = geopandas.datasets.get_path("nybb")
-    gdf = geopandas.read_file(path_to_data)
-
-    geopandas_plot = gdf.plot()
-    geopandas_plot = plt_show(geopandas_plot.figure)
-
-    geopandas_explore = gdf.explore()
-    geopandas_explore = geopandas_explore._repr_html_()
-"""
 def main(inputs):
     soil_type = inputs['soil_type']
     k = inputs['hydraulic_conductivity']
@@ -127,19 +97,28 @@ def main(inputs):
     r = 6371 # km
     p = math.pi / 180
     beta = 0.5 - math.cos((lat2-lat1)*p)/2 + math.cos(lat1*p) * math.cos(lat2*p) * (1-math.cos((lon2-lon1)*p))/2
-    length = 2 * r * math.asin(math.sqrt(beta))      
+    length = 2 * r * math.asin(math.sqrt(beta))
+    L = length*1000      
     #Hydronamic Dispersion       
     D = (inputs['chemical_diffusion'])
     Dc = D*10**-9
+    alphaL = 0.831*math.log(L,10)**2.414
+    DL = alphaL*vs+Dc
     #Retardation Factor 
     Kd = inputs['distribution_coeff']
     ps = inputs['soil_bulk_density']
     R = 1+Kd*(ps/ne)
     #Time Calculations 
     days = inputs['days']
-    daysf = float(days)
-    t = daysf*float(3600)
-    time = float(t)
-    
+    t = days*(86400)
+    # Concentration Calculations 
+    Vc = vs/R
+    c0 = inputs['initial_conc']
+    erfc1 = (R*L-vs*t)/(2*math.sqrt(R*DL*t))
+    #erfc2 = (R*L+vs*t)/(2*math.sqrt(R*DL*t))
+    #erfc3 = math.exp((vs*L)/DL)
+    #C = (c0/2)*(math.erfc(erfc1)+erfc3*math.erfc(erfc2))
 
-    return {"K": K, "Length": length, "Time" : time, 'Dc' : Dc, 'R': R, 'vs' : vs}
+
+    return {"K": K, "L": L, "t" : t, 'Dc' : Dc, 'R': R, 'vs' : vs, 'erfc1' : erfc1}
+    
