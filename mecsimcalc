@@ -2,6 +2,7 @@ import geopandas
 import folium
 import math
 
+
 def main(inputs):
     soil_type = inputs['soil_type']
     k = inputs['hydraulic_conductivity']
@@ -79,30 +80,30 @@ def main(inputs):
         if k == 1:
             K = 4.7*10**-9
 
-    #seepage velocity calculations
+    # seepage velocity calculations
     i = inputs['hydraulic_gradient']
     ne = inputs['ne']
     vs = (K*i)/(ne)
-    #length calculations 
+    # length calculations 
     lat1 = inputs['latitude_spill']
     lat2 = inputs['latitude_predict']
     lon1 = inputs['longtitude_spill']
     lon2 = inputs['longitude_predict']
-    r = 6371 #km
+    r = 6371
     p = math.pi / 180
     beta = 0.5 - math.cos((lat2-lat1)*p)/2 + math.cos(lat1*p) * math.cos(lat2*p) * (1-math.cos((lon2-lon1)*p))/2
     length = 2 * r * math.asin(math.sqrt(beta))
     L = length*1000
-    #Hydronamic Dispersion
+    # Hydronamic Dispersion
     D = (inputs['chemical_diffusion'])
     Dc = D*10**-9
     alphaL = 0.831*math.log(L, 10)**2.414
     DL = alphaL*vs+Dc
-    #Retardation Factor 
+    # Retardation Factor
     Kd = inputs['distribution_coeff']
     ps = inputs['soil_bulk_density']
     R = 1+Kd*(ps/ne)
-    #Time Calculations 
+    # Time Calculations
     days = inputs['days']
     t = days*(86400)
     # Concentration Calculations
@@ -111,17 +112,17 @@ def main(inputs):
     erfc2 = (R*L+vs*t)/(2*math.sqrt(R*DL*t))
     erfc3 = math.exp((vs*L)/DL)
     C = (c0/2)*(math.erfc(erfc1)+erfc3*math.erfc(erfc2))
-    #Time Required for BULK dissolved solvent to reach predicated location
+    # Time Required for BULK dissolved solvent to reach predicated location
     Vc = vs/R
     T_bulk = (L/Vc)/31556952
     # Create a folium map
-    m = folium.Map(location=[lat1, 360-lon1],
-                   zoom_start=15, tiles=inputs['map_tile'])
+    m = folium.Map(location=[lat1, 360-lon1], zoom_start=15, tiles=inputs['map_tile'])
 
     # Add markers to map
     folium.Marker(
-        [lat1, 360-lon1], popup="<i>Italic popup text</i>", tooltip="Click on Marker"
-    ).add_to(m)
+        [lat1, 360-lon1], popup="<i>Italic popup text</i>",
+        tooltip="Click on Marker"
+        ).add_to(m)
     folium.Marker(  # Marker with icon
         location=[lat2, 360-lon2],
         popup="<b>Bold popup text</b>",
@@ -135,24 +136,14 @@ def main(inputs):
     folium.PolyLine(lat_lng_points,
                     color=inputs['color'],
                     tooltip="PolyLine",
-                    weight=5,  # line thickness
+                    weight=5,    # line thickness
                     opacity=0.8  # transparency
                     ).add_to(m)
-
-
     # Export folium map as HTML string
     map_html = m._repr_html_()
-
- # Add ellipse shape
-    folium.Circle(
-        radius=20,
-        location=[(lat1+lat2)/2, (360-lon1)+(360-lon2)/2],
-        tooltip="Click on Circle",
-        popup="Circle",
-        color = 31,
-        fill=False,
-    ).add_to(m)
-
-    return {"K": K, "L": L, "t" : t, "Dc" : Dc, "R": R, "vs" : vs, "L": L, "map": map_html, "C": C, "T_bulk": T_bulk, "c0": c0}
-
-
+    guide = inputs['guideline']
+    if C < guide:
+        msg = "Concentration is within acceptable range."
+    if C >= guide:
+        msg = "Concentration is not within acceptable range; remediation is required."
+    return {"K": K, "L": L, "t": t, "Dc": Dc, "R": R, "vs": vs, "L": L, "map": map_html, "C": C, "T_bulk": T_bulk, "c0": c0, "message": msg}
