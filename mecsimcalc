@@ -36,9 +36,8 @@ def main(inputs):
 
     geopandas_explore = gdf.explore()
     geopandas_explore = geopandas_explore._repr_html_()
-    """
+"""
 def main(inputs):
-
     soil_type = inputs['soil_type']
     k = inputs['hydraulic_conductivity']
     K = 'hydraulic_conductivity'
@@ -46,14 +45,14 @@ def main(inputs):
     print(soil_type)
     if soil_type == "Fine Sand":
         if k == 0:
-            K == 2*10^-7
+            K = 2*10^-7
         if k == 0.5:
-            K == (2*10^-4 + 2*10^-7)/2
+            K = (2*10^-4 + 2*10^-7)/2
         if k == 1:
-            K == 2*10^-4
+            K = 2*10^-4
     if soil_type == "Medium Sand":
         if k == 0:
-            K == 9*10^-7
+            K = 9*10^-7
         if k == 0.5:
             K == (5*10^-4 + 9*10^-7)/2
         if k == 1:
@@ -113,71 +112,64 @@ def main(inputs):
         if k == 0.5:
             K == (1*10^-11 + 4.7*10^-9)/2
         if k == 1:
-            K == 4.7*10^-9
-            
- #seepage velocity calculations
- i = inputs['hydraulic_gradient']
- ne = inputs['ne']
- vs = (K*i)/ne
- #length calculations 
- lat1 = inputs['latitude_spill']
- lat2 = inputs['latitude_predict']
- lon1 = inputs['longtitude_spill']
- lon2 = inputs['longitude_predict']
- #def distance(lat1, lon1, lat2, lon2):
-	  r = 6371; # km
-      p = pi / 180;
-	    beta = 0.5 - cos((lat2-lat1)*p)/2 + cos(lat1*p) * cos(lat2*p) * (1-cos((lon2-lon1)*p))/2;
-	    length = 2 * r * asin(sqrt(beta));       
- #Hydronamic Dispersion       
- D* = inputs['chemical_diffusion']
- #Retardation Factor 
- Kd = inputs['distribution_coeff']
- ps = inputs['soil_bulk_density']
- R = 1+Kd(ps/ne)
- #Time Calculations 
- date1 = inputs['spill_start_date']
- date2 = inputs['end_date']
- #def days_between_dates(date1, date2):
-    date_format = "%d-%m-%Y"
-    # Convert strings to datetime objects
-    datetime1 = datetime.strptime(date1, date_format)
-    datetime2 = datetime.strptime(date2, date_format)
-    
-    # Calculate the difference between dates
-    days = datetime2 - datetime1
-    t = days*86400
+            K == 4.7*10^-9        
+     
+     #seepage velocity calculations
+    i = inputs['hydraulic_gradient']
+    ne = inputs['ne']
+    vs = (K*i)/(ne) 
+    #length calculations 
+    lat1 = inputs['latitude_spill']
+    lat2 = inputs['latitude_predict']
+    lon1 = inputs['longtitude_spill']
+    lon2 = inputs['longitude_predict']
+    #def distance(lat1, lon1, lat2, lon2):
+    r = 6371 # km
+    p = math.pi / 180
+    beta = 0.5 - math.cos((lat2-lat1)*p)/2 + math.cos(lat1*p) * math.cos(lat2*p) * (1-math.cos((lon2-lon1)*p))/2
+    length = 2 * r * math.asin(math.sqrt(beta))          
+    #Hydronamic Dispersion       
+    D = (inputs['chemical_diffusion'])*10^-9
+    #Retardation Factor 
+    Kd = inputs['distribution_coeff']
+    ps = inputs['soil_bulk_density']
+    R = 1+Kd(ps/ne)
+    #Time Calculations 
+    days = inputs['days']
+    t = days*3600
+
     return {"k": k, "length": length, "t" : t}
+    
 
 # Example usage:
-date_string1 = "25-12-2023"
-date_string2 = "31-12-2023"
-days_difference = days_between_dates(date_string1, date_string2)
-print(f"The number of days between {date_string1} and {date_string2} is: {days_difference} days")
+    # date_string1 = "25-12-2023"
+    # date_string2 = "31-12-2023"
+    # days_difference = 0 #days_between_dates(date_string1, date_string2)
+    # print(f"The number of days between {date_string1} and {date_string2} is: {days_difference} days")
 
-#Concentration Calculations 
-c0 = inputs['initial_conc']
-erfc1 = (R*length-vs)
-    
-
-
+    # #Concentration Calculations 
+    # c0 = inputs['initial_conc']
+    # erfc1 = (R*length-vs)
+        
 
 
 
 
-    #return {"folium_map": folium_map, 
-            #"geopandas_plot": geopandas_plot, 
-            #"geopandas_explore": geopandas_explore,
-            #"soil_type": soil_type}
 
 
-# def main(inputs):
-#     # seepage velocity calculations 
-#     soil_type = inputs['soil_type']
-#     print(soil_type)
-#     if soil_type == "Fine Sand":
-#         print("hello")
-#     return{
+    #     #return {"folium_map": folium_map, 
+    #             #"geopandas_plot": geopandas_plot, 
+    #             #"geopandas_explore": geopandas_explore,
+    #             #"soil_type": soil_type}
 
-#         "soil_type": soil_type
-#     }
+
+    # # def main(inputs):
+    # #     # seepage velocity calculations 
+    # #     soil_type = inputs['soil_type']
+    # #     print(soil_type)
+    # #     if soil_type == "Fine Sand":
+    # #         print("hello")
+    # #     return{
+
+    # #         "soil_type": soil_type
+    # #     }
