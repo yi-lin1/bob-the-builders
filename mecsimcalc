@@ -45,74 +45,74 @@ def main(inputs):
     print(soil_type)
     if soil_type == "Fine Sand":
         if k == 0:
-            K = 2*10^-7
+            K = 2*10**-7
         if k == 0.5:
-            K = (2*10^-4 + 2*10^-7)/2
+            K = (2*10**-4 + 2*10**-7)/2
         if k == 1:
-            K = 2*10^-4
+            K = 2*10**-4
     if soil_type == "Medium Sand":
         if k == 0:
-            K = 9*10^-7
+            K = 9*10**-7
         if k == 0.5:
-            K == (5*10^-4 + 9*10^-7)/2
+            K = (5*10**-4 + 9*10**-7)/2
         if k == 1:
-            K == 5*10^4
+            K = 5*10**4
     if soil_type == "Coarse Sand":
         if k == 0:
-            K == 9*10^-7
+            K = 9*10**-7
         if k == 0.5:
-            K == (6*10^-4 + 9*10^-7)/2
+            K = (6*10**-4 + 9*10**-7)/2
         if k == 1:
-            K == 6*10^-4
+            K = 6*10**-4
     if soil_type == "Gravelly Sand (Poorly Graded)":
         if k == 0:
-            K == 2.55*10^-5
+            K = 2.55*10**-5
         if k == 0.5:
-            K == (5.35*10^-4 + 2.55*10^-5)/2
+            K = (5.35*10**-4 + 2.55*10**-5)/2
         if k == 1:
-            K == 5.35*10^-4
+            K = 5.35*10**-4
     if soil_type == "Gravelly Sand (Well Graded)":
         if k == 0:
-            K == 1*10^-8
+            K = 1*10**-8
         if k == 0.5:
-            K == (1*10^-6 + 1*10^-8)/2
+            K = (1*10**-6 + 1*10**-8)/2
         if k == 1:
-            K == 1*10^-6
+            K = 1*10**-6
     if soil_type == "Silty Sand":
         if k == 0:
-            K == 1*10^-8
+            K = 1*10**-8
         if k == 0.5:
-            K == (5*10^-6 + 1*10^-8)/2
+            K = (5*10**-6 + 1*10**-8)/2
         if k == 1:
-            K == 5*10^-6
+            K = 5*10**-6
     if soil_type == "Clayey Sand":
         if k == 0:
-            K == 5.5*10^-9
+            K = 5.5*10**-9
         if k == 0.5:
-            K == (5.5*10^-6 + 5.5*10^-9)/2
+            K = (5.5*10**-6 + 5.5*10**-9)/2
         if k == 1:
-            K == 5.5*10^-6
+            K = 5.5*10**-6
     if soil_type == "Gravel":
         if k == 0:
-            K ==  3*10^-4
+            K =  3*10**-4
         if k == 0.5:
-            K == (3*10^-4 + 3*10^-2)/2
+            K = (3*10**-4 + 3*10**-2)/2
         if k == 1:
-            K == 3*10^-2
+            K = 3*10**-2
     if soil_type == "Silt (Compacted)":
         if k == 0:
-            K == 7*10^-10
+            K = 7*10**-10
         if k == 0.5:
-            K ==  (7*10^-10 + 7*10^-8)/2
+            K =  (7*10**-10 + 7*10**-8)/2
         if k == 1:
-            K == 7*10^-8
+            K = 7*10**-8
     if soil_type == "Clay":
         if k == 0:
-            K == 1*10^-11
+            K = 1*10**-11
         if k == 0.5:
-            K == (1*10^-11 + 4.7*10^-9)/2
+            K = (1*10**-11 + 4.7*10**-9)/2
         if k == 1:
-            K == 4.7*10^-9        
+            K = 4.7*10**-9        
      
      #seepage velocity calculations
     i = inputs['hydraulic_gradient']
@@ -127,49 +127,19 @@ def main(inputs):
     r = 6371 # km
     p = math.pi / 180
     beta = 0.5 - math.cos((lat2-lat1)*p)/2 + math.cos(lat1*p) * math.cos(lat2*p) * (1-math.cos((lon2-lon1)*p))/2
-    length = 2 * r * math.asin(math.sqrt(beta))          
+    length = 2 * r * math.asin(math.sqrt(beta))      
     #Hydronamic Dispersion       
-    D = (inputs['chemical_diffusion'])*10^-9
+    D = (inputs['chemical_diffusion'])
+    Dc = D*10**-9
     #Retardation Factor 
     Kd = inputs['distribution_coeff']
     ps = inputs['soil_bulk_density']
-    R = 1+Kd(ps/ne)
+    R = 1+Kd*(ps/ne)
     #Time Calculations 
     days = inputs['days']
-    t = days*3600
-
-    return {"k": k, "length": length, "t" : t}
+    daysf = float(days)
+    t = daysf*float(3600)
+    time = float(t)
     
 
-# Example usage:
-    # date_string1 = "25-12-2023"
-    # date_string2 = "31-12-2023"
-    # days_difference = 0 #days_between_dates(date_string1, date_string2)
-    # print(f"The number of days between {date_string1} and {date_string2} is: {days_difference} days")
-
-    # #Concentration Calculations 
-    # c0 = inputs['initial_conc']
-    # erfc1 = (R*length-vs)
-        
-
-
-
-
-
-
-    #     #return {"folium_map": folium_map, 
-    #             #"geopandas_plot": geopandas_plot, 
-    #             #"geopandas_explore": geopandas_explore,
-    #             #"soil_type": soil_type}
-
-
-    # # def main(inputs):
-    # #     # seepage velocity calculations 
-    # #     soil_type = inputs['soil_type']
-    # #     print(soil_type)
-    # #     if soil_type == "Fine Sand":
-    # #         print("hello")
-    # #     return{
-
-    # #         "soil_type": soil_type
-    # #     }
+    return {"K": K, "Length": length, "Time" : time, 'Dc' : Dc, 'R': R, 'vs' : vs}
