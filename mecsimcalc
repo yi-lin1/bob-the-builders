@@ -22,6 +22,7 @@ def main(inputs):
             K = (5*10**-4 + 9*10**-7)/2
         if k == 1:
             K = 5*10**4
+            """
     if soil_type == "Coarse Sand":
         if k == 0:
             K = 9*10**-7
@@ -29,6 +30,7 @@ def main(inputs):
             K = (6*10**-4 + 9*10**-7)/2
         if k == 1:
             K = 6*10**-4
+            """
     if soil_type == "Gravelly Sand (Poorly Graded)":
         if k == 0:
             K = 2.55*10**-5
@@ -50,6 +52,7 @@ def main(inputs):
             K = (5*10**-6 + 1*10**-8)/2
         if k == 1:
             K = 5*10**-6
+            """
     if soil_type == "Clayey Sand":
         if k == 0:
             K = 5.5*10**-9
@@ -57,6 +60,7 @@ def main(inputs):
             K = (5.5*10**-6 + 5.5*10**-9)/2
         if k == 1:
             K = 5.5*10**-6
+            """
     if soil_type == "Gravel":
         if k == 0:
             K = 3*10**-4
